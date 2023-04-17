@@ -1,0 +1,6 @@
+projectKey=JeuMinesTp
+serverUrl=http://localhost:9000
+serverVersion=9.9.0.65466
+dashboardUrl=http://localhost:9000/dashboard?id=JeuMinesTp
+ceTaskId=AYd0m84kmC8isZVcox9X
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYd0m84kmC8isZVcox9X
