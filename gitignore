@@ -1,0 +1,5 @@
+.idea/
+target/
+mines/
+jacoco-resources/
+*.html
