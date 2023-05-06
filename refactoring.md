@@ -1,0 +1,42 @@
+# Notes
+- Board Dimensions to be changed :
+  - Cause : changing cell size affects the board size.
+- Board Class :
+  - line 81 : Use "nextInt(all_cells)" instead of position = (int) (all_cells * random.nextDouble()).
+- Cell Possible Values Interpretation :
+  - cell € [0,9] cell result is visible (checked) to user :
+    - cell == 0 EMPTY_CELL means no mines in the 8 corners
+    - cell == 9 MINE_CELL means cell has a mine
+    - cell == x € [1,8] means cell has x corner cells that have mines
+  - cell € [10,19] cell result invisible (non-checked) to user, but it's not marked
+    - cell == 10 EMPTY_CELL means invisible empty cell 
+    - cell == 19 MINE_CELL means invisible mine cell
+    - cell == x € [11,18] means invisible cell that has x corner cells with a mine
+  - cell € [20,29] cell result invisible (non-checked) to user, but marked by him
+    - cell == 20 EMPTY_CELL means invisible marked empty cell
+    - cell == 29 MINE_CELL means invisible marked mine cell
+    - cell == x € [21,28] means invisible marked cell that has x corner cells with a mine
+- Cell States :
+  - Visible
+  - Marked
+  - Invisible
+- Corners :
+  - top-left
+  - top
+  - top-right
+  - left
+  - right
+  - bottom-left
+  - bottom
+  - bottom-right
+- Cell Class :
+  - int Index or ID
+  - CellState state
+  - HashMap<Corner, Integer> Corners 
+  - int cornersMineCell
+  - JLabel cellContent
+  - int Width
+  - int Height
+- GameClass :
+  - HashMap<Integer, Cell> gameBoard
+  - bool inGame

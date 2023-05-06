@@ -75,6 +75,14 @@ public class Board extends JPanel {
 
         statusbar.setText(Integer.toString(mines_left));
 
+        /**
+            the game consist of cells, the cell which is a mine has these 8 corner cells :
+             ————————————  ———————————  —————————————
+            | top-left    | top       | top-right    |
+            | left        | mine-cell | right        |
+            | bottom-left | bottom    | bottom-right |
+             ————————————  ———————————  —————————————
+        */
         i = 0;
         while (i < mines) {
 
@@ -87,41 +95,51 @@ public class Board extends JPanel {
                 field[position] = COVERED_MINE_CELL;
                 i++;
 
+                // checking for not being in the left corner column
                 if (current_col > 0) {
-                    cell = position - 1 - cols;
+                    cell = position - 1 - cols; // top-left cell
                     if (cell >= 0)
                         if (field[cell] != COVERED_MINE_CELL)
                             field[cell] += 1;
-                    cell = position - 1;
+                    cell = position - 1; // left cell
+                    // redundant check here we already checked that we are in a column > 0
+                    // so for sure column - 1 >= 0
                     if (cell >= 0)
                         if (field[cell] != COVERED_MINE_CELL)
                             field[cell] += 1;
 
-                    cell = position + cols - 1;
+                    cell = position + cols - 1; // bottom-left cell
+                    // not sure if this is the best check for this cell
                     if (cell < all_cells)
                         if (field[cell] != COVERED_MINE_CELL)
                             field[cell] += 1;
                 }
 
-                cell = position - cols;
+                cell = position - cols; // top cell
                 if (cell >= 0)
                     if (field[cell] != COVERED_MINE_CELL)
                         field[cell] += 1;
-                cell = position + cols;
+
+                cell = position + cols; // bottom cell
+                // not sure if this is the best check for this cell
                 if (cell < all_cells)
                     if (field[cell] != COVERED_MINE_CELL)
                         field[cell] += 1;
 
+                // checking for not being in the right corner column
                 if (current_col < (cols - 1)) {
-                    cell = position - cols + 1;
+
+                    cell = position - cols + 1; // top-right cell
                     if (cell >= 0)
                         if (field[cell] != COVERED_MINE_CELL)
                             field[cell] += 1;
-                    cell = position + cols + 1;
+
+                    cell = position + cols + 1; // bottom-right cell
                     if (cell < all_cells)
                         if (field[cell] != COVERED_MINE_CELL)
                             field[cell] += 1;
-                    cell = position + 1;
+
+                    cell = position + 1; // right cell
                     if (cell < all_cells)
                         if (field[cell] != COVERED_MINE_CELL)
                             field[cell] += 1;
@@ -136,7 +154,7 @@ public class Board extends JPanel {
         int cell;
 
         if (current_col > 0) {
-            cell = j - cols - 1;
+            cell = j - cols - 1; // top-left cell
             if (cell >= 0)
                 if (field[cell] > MINE_CELL) {
                     field[cell] -= COVER_FOR_CELL;
@@ -144,7 +162,7 @@ public class Board extends JPanel {
                         find_empty_cells(cell);
                 }
 
-            cell = j - 1;
+            cell = j - 1; // left cell
             if (cell >= 0)
                 if (field[cell] > MINE_CELL) {
                     field[cell] -= COVER_FOR_CELL;
@@ -152,7 +170,7 @@ public class Board extends JPanel {
                         find_empty_cells(cell);
                 }
 
-            cell = j + cols - 1;
+            cell = j + cols - 1; // bottom-left cell
             if (cell < all_cells)
                 if (field[cell] > MINE_CELL) {
                     field[cell] -= COVER_FOR_CELL;
@@ -161,7 +179,7 @@ public class Board extends JPanel {
                 }
         }
 
-        cell = j - cols;
+        cell = j - cols; // top cell
         if (cell >= 0)
             if (field[cell] > MINE_CELL) {
                 field[cell] -= COVER_FOR_CELL;
@@ -169,7 +187,7 @@ public class Board extends JPanel {
                     find_empty_cells(cell);
             }
 
-        cell = j + cols;
+        cell = j + cols; // bottom cell
         if (cell < all_cells)
             if (field[cell] > MINE_CELL) {
                 field[cell] -= COVER_FOR_CELL;
@@ -178,7 +196,7 @@ public class Board extends JPanel {
             }
 
         if (current_col < (cols - 1)) {
-            cell = j - cols + 1;
+            cell = j - cols + 1; // top-right cell
             if (cell >= 0)
                 if (field[cell] > MINE_CELL) {
                     field[cell] -= COVER_FOR_CELL;
@@ -186,7 +204,7 @@ public class Board extends JPanel {
                         find_empty_cells(cell);
                 }
 
-            cell = j + cols + 1;
+            cell = j + cols + 1; // bottom-right cell
             if (cell < all_cells)
                 if (field[cell] > MINE_CELL) {
                     field[cell] -= COVER_FOR_CELL;
@@ -194,7 +212,7 @@ public class Board extends JPanel {
                         find_empty_cells(cell);
                 }
 
-            cell = j + 1;
+            cell = j + 1; // right cell
             if (cell < all_cells)
                 if (field[cell] > MINE_CELL) {
                     field[cell] -= COVER_FOR_CELL;
@@ -206,7 +224,6 @@ public class Board extends JPanel {
     }
 
     public void paint(Graphics g) {
-
         int cell = 0;
         int uncover = 0;
 
@@ -215,6 +232,7 @@ public class Board extends JPanel {
 
                 cell = field[(i * cols) + j];
 
+                // didn't understand this check till now (cell == MINE_CELL)
                 if (inGame && cell == MINE_CELL)
                     inGame = false;
 
@@ -259,6 +277,7 @@ public class Board extends JPanel {
             int cCol = x / CELL_SIZE;
             int cRow = y / CELL_SIZE;
 
+            // non-useful boolean variable
             boolean rep = false;
 
             if (!inGame) {
@@ -288,16 +307,20 @@ public class Board extends JPanel {
                         }
                     }
 
-                } else {
+                }
+                else {
 
+                    // this check to be revised
                     if (field[(cRow * cols) + cCol] > COVERED_MINE_CELL) {
                         return;
                     }
 
+                    // cell € ]9,29[ && cell <= 19
+                    // => cell € [10,19]
                     if ((field[(cRow * cols) + cCol] > MINE_CELL) &&
                             (field[(cRow * cols) + cCol] < MARKED_MINE_CELL)) {
 
-                        field[(cRow * cols) + cCol] -= COVER_FOR_CELL;
+                        field[(cRow * cols) + cCol] -= COVER_FOR_CELL; // => cell € [0,9]
                         rep = true;
 
                         if (field[(cRow * cols) + cCol] == MINE_CELL)

@@ -1,6 +1,7 @@
-projectKey=JeuMinesTp
-serverUrl=http://localhost:9000
-serverVersion=9.9.0.65466
-dashboardUrl=http://localhost:9000/dashboard?id=JeuMinesTp
-ceTaskId=AYd0m84kmC8isZVcox9X
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYd0m84kmC8isZVcox9X
+organization=tml-tp-sonarqube
+projectKey=TML-TP-SonarQube_JeuMines
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.40347
+dashboardUrl=https://sonarcloud.io/dashboard?id=TML-TP-SonarQube_JeuMines
+ceTaskId=AYe5dEpSg5m7wwSiyL2c
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYe5dEpSg5m7wwSiyL2c
