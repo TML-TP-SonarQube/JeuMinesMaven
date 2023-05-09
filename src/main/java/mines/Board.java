@@ -1,339 +1,220 @@
 package mines;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Random;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class Board extends JPanel {
     private static final long serialVersionUID = 6195235521361212179L;
 
-    private final int NUM_IMAGES = 13;
-    private final int CELL_SIZE = 15;
 
-    private final int COVER_FOR_CELL = 10;
-    private final int MARK_FOR_CELL = 10;
-    private final int EMPTY_CELL = 0;
-    private final int MINE_CELL = 9;
-    private final int COVERED_MINE_CELL = MINE_CELL + COVER_FOR_CELL;
-    private final int MARKED_MINE_CELL = COVERED_MINE_CELL + MARK_FOR_CELL;
-
-    private final int DRAW_MINE = 9;
-    private final int DRAW_COVER = 10;
-    private final int DRAW_MARK = 11;
-    private final int DRAW_WRONG_MARK = 12;
-
-    private int[] field;
+    private final Random random;
+    private transient List<Cell> boardCells;
+    private static final int NUM_IMAGES = 13;
     private boolean inGame;
-    private int mines_left;
-    private Image[] img;
-    private int mines = 40;
-    private int rows = 16;
-    private int cols = 16;
-    private int all_cells;
-    private JLabel statusbar;
+    private int minesLeft;
+    private final transient  Image[] img;
+    private static final int MINES = 40;
+    public static final int ROWS = 16;
+    public static final int COLS = 16;
+    private int allCells;
+    private final JLabel statusbar;
+    private int checkedCells = 0;
+    private static final int DRAW_MARK = 11;
+    private static final int DRAW_WRONG_MARK = 12;
+    private static final int COVER_FOR_CELL = 10;
 
-    public Board(JLabel statusbar) {
+    public Board(JLabel statusbar) throws NoSuchAlgorithmException {
+
+
+        random = SecureRandom.getInstanceStrong();
+
         this.statusbar = statusbar;
 
-        img = new Image[NUM_IMAGES];
-
+        img =  new Image[NUM_IMAGES];
         for (int i = 0; i < NUM_IMAGES; i++) {
-            img[i] = new ImageIcon("images/" + (i)
-                    + ".gif").getImage();
+            img[i] = new ImageIcon("images/" + (i) + ".gif").getImage();
         }
 
-        setDoubleBuffered(true);
+        addMouseListener(new MinesAdapter());
+        initGame();
+    }
 
-        addMouseListener(new Board.MinesAdapter());
+    public void initGame(){
+        allCells = ROWS * COLS;
+        boardCells = new ArrayList<>(allCells);
+
+        for (int i = 0; i < allCells; i++) {
+            int cellIndex = i;
+            Cell newCell = new Cell(cellIndex, img[COVER_FOR_CELL]);
+            boardCells.add(newCell);
+        }
+        repaint();
         newGame();
+
+        // Set the layout manager of the panel to BorderLayout
+        setLayout(new BorderLayout());
+
+
+
     }
 
     public void newGame() {
 
-        Random random;
-        int current_col;
-
-        int i = 0;
-        int position = 0;
-        int cell = 0;
-
-        random = new Random();
         inGame = true;
-        mines_left = mines;
+        minesLeft = MINES;
 
-        all_cells = rows * cols;
-        field = new int[all_cells];
+        statusbar.setText(Integer.toString(minesLeft));
 
-        for (i = 0; i < all_cells; i++)
-            field[i] = COVER_FOR_CELL;
+        int position;
+        int i = 0;
+        while (i < MINES) {
 
-        statusbar.setText(Integer.toString(mines_left));
+            position = random.nextInt(allCells);
 
-        /**
-            the game consist of cells, the cell which is a mine has these 8 corner cells :
-             ————————————  ———————————  —————————————
-            | top-left    | top       | top-right    |
-            | left        | mine-cell | right        |
-            | bottom-left | bottom    | bottom-right |
-             ————————————  ———————————  —————————————
-        */
-        i = 0;
-        while (i < mines) {
-
-            position = (int) (all_cells * random.nextDouble());
-
-            if ((position < all_cells) &&
-                    (field[position] != COVERED_MINE_CELL)) {
-
-                current_col = position % cols;
-                field[position] = COVERED_MINE_CELL;
+            if(!boardCells.get(position).isMined()){
+                boardCells.get(position).mineTheCell();
                 i++;
-
-                // checking for not being in the left corner column
-                if (current_col > 0) {
-                    cell = position - 1 - cols; // top-left cell
-                    if (cell >= 0)
-                        if (field[cell] != COVERED_MINE_CELL)
-                            field[cell] += 1;
-                    cell = position - 1; // left cell
-                    // redundant check here we already checked that we are in a column > 0
-                    // so for sure column - 1 >= 0
-                    if (cell >= 0)
-                        if (field[cell] != COVERED_MINE_CELL)
-                            field[cell] += 1;
-
-                    cell = position + cols - 1; // bottom-left cell
-                    // not sure if this is the best check for this cell
-                    if (cell < all_cells)
-                        if (field[cell] != COVERED_MINE_CELL)
-                            field[cell] += 1;
-                }
-
-                cell = position - cols; // top cell
-                if (cell >= 0)
-                    if (field[cell] != COVERED_MINE_CELL)
-                        field[cell] += 1;
-
-                cell = position + cols; // bottom cell
-                // not sure if this is the best check for this cell
-                if (cell < all_cells)
-                    if (field[cell] != COVERED_MINE_CELL)
-                        field[cell] += 1;
-
-                // checking for not being in the right corner column
-                if (current_col < (cols - 1)) {
-
-                    cell = position - cols + 1; // top-right cell
-                    if (cell >= 0)
-                        if (field[cell] != COVERED_MINE_CELL)
-                            field[cell] += 1;
-
-                    cell = position + cols + 1; // bottom-right cell
-                    if (cell < all_cells)
-                        if (field[cell] != COVERED_MINE_CELL)
-                            field[cell] += 1;
-
-                    cell = position + 1; // right cell
-                    if (cell < all_cells)
-                        if (field[cell] != COVERED_MINE_CELL)
-                            field[cell] += 1;
-                }
+                boardCells.get(position).getCellCorners()
+                        .forEach((corner, integer) ->
+                                boardCells.get(integer).addCornerMineCell()
+                        );
             }
-        }
-    }
-
-    public void find_empty_cells(int j) {
-
-        int current_col = j % cols;
-        int cell;
-
-        if (current_col > 0) {
-            cell = j - cols - 1; // top-left cell
-            if (cell >= 0)
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-
-            cell = j - 1; // left cell
-            if (cell >= 0)
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-
-            cell = j + cols - 1; // bottom-left cell
-            if (cell < all_cells)
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-        }
-
-        cell = j - cols; // top cell
-        if (cell >= 0)
-            if (field[cell] > MINE_CELL) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
-            }
-
-        cell = j + cols; // bottom cell
-        if (cell < all_cells)
-            if (field[cell] > MINE_CELL) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
-            }
-
-        if (current_col < (cols - 1)) {
-            cell = j - cols + 1; // top-right cell
-            if (cell >= 0)
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-
-            cell = j + cols + 1; // bottom-right cell
-            if (cell < all_cells)
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-
-            cell = j + 1; // right cell
-            if (cell < all_cells)
-                if (field[cell] > MINE_CELL) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
         }
 
     }
 
+    public void findEmptyCells(int cellIndex) {
+
+        boardCells.get(cellIndex).getCellCorners()
+                .values()
+                .forEach(cellCorner -> {
+                    if(boardCells.get(cellCorner).getCellState() != CellState.CHECKED) {
+                        boardCells.get(cellCorner).checkCell(img[boardCells.get(cellCorner).getCellContent()]);
+                        checkedCells++;
+                        if (boardCells.get(cellCorner).hasNoMineCellCorners())
+                            findEmptyCells(cellCorner);
+                    }
+                });
+
+        repaint();
+
+    }
+
+    @Override
     public void paint(Graphics g) {
-        int cell = 0;
-        int uncover = 0;
+        boardCells.forEach(cell -> g.drawImage(cell.getCellImage(), cell.column * Cell.WIDTH,
+                cell.row * Cell.HEIGHT, this));
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-
-                cell = field[(i * cols) + j];
-
-                // didn't understand this check till now (cell == MINE_CELL)
-                if (inGame && cell == MINE_CELL)
-                    inGame = false;
-
-                if (!inGame) {
-                    if (cell == COVERED_MINE_CELL) {
-                        cell = DRAW_MINE;
-                    } else if (cell == MARKED_MINE_CELL) {
-                        cell = DRAW_MARK;
-                    } else if (cell > COVERED_MINE_CELL) {
-                        cell = DRAW_WRONG_MARK;
-                    } else if (cell > MINE_CELL) {
-                        cell = DRAW_COVER;
-                    }
-
-                } else {
-                    if (cell > COVERED_MINE_CELL)
-                        cell = DRAW_MARK;
-                    else if (cell > MINE_CELL) {
-                        cell = DRAW_COVER;
-                        uncover++;
-                    }
-                }
-
-                g.drawImage(img[cell], (j * CELL_SIZE),
-                        (i * CELL_SIZE), this);
-            }
-        }
-
-        if (uncover == 0 && inGame) {
-            inGame = false;
-            statusbar.setText("Game won");
-        } else if (!inGame)
-            statusbar.setText("Game lost");
     }
 
-    class MinesAdapter extends MouseAdapter {
+    private class MinesAdapter extends MouseAdapter {
+
+        @Override
         public void mousePressed(MouseEvent e) {
 
-            int x = e.getX();
-            int y = e.getY();
+            int cellColumn = e.getX() / Cell.WIDTH;
+            int cellRow = e.getY() / Cell.HEIGHT;
 
-            int cCol = x / CELL_SIZE;
-            int cRow = y / CELL_SIZE;
+            int cellIndex = cellRow * COLS + cellColumn;
 
-            // non-useful boolean variable
-            boolean rep = false;
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                // Left mouse button clicked
+                cellLabelLeftClicked(cellIndex);
+            } else{
+                // Right mouse button clicked
+                cellLabelRightClicked(cellIndex);
+            }
+
+            checkWining();
+        }
+
+
+        private void cellLabelLeftClicked(int cellIndex) {
 
             if (!inGame) {
-                newGame();
-                repaint();
+                initGame();
+                return;
             }
 
-            if ((x < cols * CELL_SIZE) && (y < rows * CELL_SIZE)) {
+            if(boardCells.get(cellIndex).getCellState() == CellState.UNCHECKED){
 
-                if (e.getButton() == MouseEvent.BUTTON3) {
-
-                    if (field[(cRow * cols) + cCol] > MINE_CELL) {
-                        rep = true;
-
-                        if (field[(cRow * cols) + cCol] <= COVERED_MINE_CELL) {
-                            if (mines_left > 0) {
-                                field[(cRow * cols) + cCol] += MARK_FOR_CELL;
-                                mines_left--;
-                                statusbar.setText(Integer.toString(mines_left));
-                            } else
-                                statusbar.setText("No marks left");
-                        } else {
-
-                            field[(cRow * cols) + cCol] -= MARK_FOR_CELL;
-                            mines_left++;
-                            statusbar.setText(Integer.toString(mines_left));
-                        }
-                    }
-
+                if (boardCells.get(cellIndex).isMined()) {
+                    inGame = false;
+                    gameOver();
                 }
                 else {
+                    boardCells.get(cellIndex).checkCell(img[boardCells.get(cellIndex).getCellContent()]);
+                    checkedCells++;
+                    repaint();
+                    if (boardCells.get(cellIndex).hasNoMineCellCorners())
+                        findEmptyCells(cellIndex);
 
-                    // this check to be revised
-                    if (field[(cRow * cols) + cCol] > COVERED_MINE_CELL) {
-                        return;
-                    }
-
-                    // cell € ]9,29[ && cell <= 19
-                    // => cell € [10,19]
-                    if ((field[(cRow * cols) + cCol] > MINE_CELL) &&
-                            (field[(cRow * cols) + cCol] < MARKED_MINE_CELL)) {
-
-                        field[(cRow * cols) + cCol] -= COVER_FOR_CELL; // => cell € [0,9]
-                        rep = true;
-
-                        if (field[(cRow * cols) + cCol] == MINE_CELL)
-                            inGame = false;
-                        if (field[(cRow * cols) + cCol] == EMPTY_CELL)
-                            find_empty_cells((cRow * cols) + cCol);
-                    }
                 }
+            }
 
-                if (rep)
+        }
+
+        private void cellLabelRightClicked(int cellIndex){
+
+            if (!inGame) {
+                initGame();
+                return;
+            }
+
+            if(boardCells.get(cellIndex).getCellState() == CellState.UNCHECKED){
+                if(minesLeft > 0){
+                    boardCells.get(cellIndex).markCell(img[DRAW_MARK]);
+                    minesLeft--;
                     repaint();
 
+                    if(minesLeft == 0)
+                        statusbar.setText("No marks left");
+                    else
+                        statusbar.setText(Integer.toString(minesLeft));
+                }
+
+            }else
+            if(boardCells.get(cellIndex).getCellState() == CellState.MARKED){
+                boardCells.get(cellIndex).unMarkCell(img[COVER_FOR_CELL]);
+                minesLeft++;
+                repaint();
+                statusbar.setText(Integer.toString(minesLeft));
             }
         }
+
+        private void checkWining(){
+            if(checkedCells == (allCells - MINES) && minesLeft == 0){
+                inGame = false;
+                statusbar.setText("Game Won");
+            }
+        }
+
+        private void gameOver() {
+
+            boardCells.forEach(cell  -> {
+                if(cell.getCellState() == CellState.MARKED) {
+                    if (cell.isMined())
+                        cell.markCell(img[DRAW_MARK]);
+                    else
+                        cell.markCell(img[DRAW_WRONG_MARK]);
+
+                }else {
+                    cell.checkCell(img[cell.getCellContent()]);
+                }
+            });
+            setSize(Cell.WIDTH * COLS, Cell.HEIGHT * ROWS);
+            repaint();
+            statusbar.setText("Game Lost");
+        }
+
     }
+
+
 }

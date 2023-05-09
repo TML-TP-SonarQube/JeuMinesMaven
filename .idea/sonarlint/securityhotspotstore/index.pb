@@ -1,6 +1,4 @@
 
-N
-src/main/java/mines/Mines.java,5/8/589e5e9e2615b4e8c58f0be85696591085b448a3
 :
 
 index.html,f/6/f6013a00b362253c64368d6eebc50ea2131754e2

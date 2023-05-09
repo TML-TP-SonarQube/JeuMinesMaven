@@ -1,0 +1,8 @@
+mines.Board#<init>(Ljavax/swing/JLabel;)V
+java.security.SecureRandom#getInstanceStrong()Ljava/security/SecureRandom;
+mines.Board$MinesAdapter#<init>(Lmines/Board;)V
+mines.Board$MinesAdapter#instance-init#
+javax.swing.ImageIcon#<init>(Ljava/lang/String;)V
+javax.swing.ImageIcon#instance-init#
+==
+initGame mines.Board#initGame()V

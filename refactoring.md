@@ -16,10 +16,12 @@
     - cell == 20 EMPTY_CELL means invisible marked empty cell
     - cell == 29 MINE_CELL means invisible marked mine cell
     - cell == x € [21,28] means invisible marked cell that has x corner cells with a mine
+
+### New Model :
 - Cell States :
-  - Visible
+  - Checked
   - Marked
-  - Invisible
+  - Unchecked
 - Corners :
   - top-left
   - top
@@ -32,11 +34,13 @@
 - Cell Class :
   - int Index or ID
   - CellState state
+  - boolean isCellMined
   - HashMap<Corner, Integer> Corners 
-  - int cornersMineCell
+  - int cornersMineCell [0,8]
   - JLabel cellContent
-  - int Width
-  - int Height
+  - int Width, Height
+  - int row, column
+  - MineTheCell()
 - GameClass :
   - HashMap<Integer, Cell> gameBoard
   - bool inGame
