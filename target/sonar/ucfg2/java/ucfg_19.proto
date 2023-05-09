@@ -1,54 +1,0 @@
-
-__sonar_lambda_0$mines.BoardI
-?/Users/mac/Desktop/JeuMinesMaven/src/main/java/mines/Board.javaU! V(K"startingBlock*ö
-startingBlockU! V(Kz
-x
-
-__unknown_file (
-
-Board.thismines.Board"__id*;
-
-__unknown_file (*
-mines.Board"
-
-Board.this*
-1*ø
-1V  V(*r
-p
-V  V(*
-%16java.util.List"__id*G
-
-__unknown_file (+*)
-
-
-Board.thismines.Board"
-
-boardCellsù
-ö
-V  V(7
-%17
-mines.Cell"
-__arrayGet*3
-
-__unknown_file (
-
-%16java.util.List*:
-
-__unknown_file (
-
-integerjava.lang.IntegerÄ~
-V  V(K
-%18void"mines.Cell#addCornerMineCell()V*/
-
-__unknown_file (
-
-%17
-mines.Cell2addCornerMineCell()"
-V  V(K
-
-%18void:"
-U" U()
-cornermines.Corner:(
-U* U(1
-integerjava.lang.IntegerB!
-java.util.function.BiConsumer
