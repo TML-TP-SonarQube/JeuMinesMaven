@@ -110,7 +110,7 @@ public class Board extends JPanel {
     @Override
     public void paint(Graphics g) {
         boardCells.forEach(cell -> g.drawImage(cell.getCellImage(), cell.column * Cell.WIDTH,
-                cell.row * Cell.HEIGHT, this));
+                cell.row * Cell.HEIGHT,Cell.WIDTH, Cell.HEIGHT, null));
 
     }
 

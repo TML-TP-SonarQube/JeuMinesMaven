@@ -12,8 +12,8 @@ public class Cell{
     private final Map<Corner, Integer> corners;
     private int cornersMineCell;
     private int cellContent;
-    static final int WIDTH = 16;
-    static final int HEIGHT = 16;
+    static final int WIDTH = 25;
+    static final int HEIGHT = 25;
     private Image cellImage;
     int row;
     int column;

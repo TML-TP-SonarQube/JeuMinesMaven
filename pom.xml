@@ -25,15 +25,6 @@
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
-    <dependencies>
-        <!-- Your project dependencies go here -->
-        <dependency>
-            <groupId>org.sonarsource.java</groupId>
-            <artifactId>sonar-java-plugin</artifactId>
-            <version>6.15.1.26025</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <!-- Java compiler plugin -->
