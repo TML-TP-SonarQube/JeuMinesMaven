@@ -14,9 +14,24 @@ import javax.swing.*;
 public class Mines extends JFrame {
     private static final long serialVersionUID = 4772165125287256837L;
 
+    /**
+     * The padding in pixels added around the board in the game window.
+     */
     private static final int BOARD_PADDING = 20;
+
+    /**
+     * The height of the status bar label.
+     */
     private static final int SCORE_PANEL_HEIGHT = 50;
+
+    /**
+     * The width of the game window in pixels.
+     */
     private static final int WIDTH = Cell.WIDTH * Board.COLS + BOARD_PADDING;
+
+    /**
+     * The height of the game window in pixels.
+     */
     private static final int HEIGHT = Cell.HEIGHT * Board.ROWS + SCORE_PANEL_HEIGHT + BOARD_PADDING;
 
 
