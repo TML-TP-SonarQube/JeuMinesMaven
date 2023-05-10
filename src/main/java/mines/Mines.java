@@ -7,6 +7,10 @@ import javax.swing.*;
 
 // This is a refactored version of the source: https://github.com/janbodnar/Java-Minesweeper-Game
 
+/**
+ * The Mines class is the entry point for the Minesweeper game application.
+ * It contains the main method that creates an instance of the game and starts it.
+ */
 public class Mines extends JFrame {
     private static final long serialVersionUID = 4772165125287256837L;
 
@@ -17,7 +21,12 @@ public class Mines extends JFrame {
 
 
 
-
+    /**
+     * Constructs a Mines object and initializes the game frame with a set size and layout.
+     * It also initializes an instance of the Board class, which generates the game board.
+     * @throws NoSuchAlgorithmException if SHA-256 algorithm is not available on the system
+     *
+     */
     public Mines() throws NoSuchAlgorithmException {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -48,6 +57,12 @@ public class Mines extends JFrame {
         setVisible(true);
     }
 
+
+    /**
+     * The main method that creates an instance of the Mines game and starts it.
+     *
+     * @param args the command line arguments
+     */
     public static void main(String[] args) throws NoSuchAlgorithmException {
         new Mines();
     }

@@ -7,31 +7,112 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.List;
-
 import javax.swing.*;
 
+/**
+ * The Board class extends JPanel and represents the game board in Minesweeper.
+ * It contains an array of cells, and manages the game logic.
+ * This class initializes the game board, including setting up the cells and placing mines.
+ * It also handles user input and updates the game state accordingly.
+ */
 public class Board extends JPanel {
     private static final long serialVersionUID = 6195235521361212179L;
 
-
-    private final Random random;
-    private transient List<Cell> boardCells;
-    private static final int NUM_IMAGES = 13;
-    private boolean inGame;
-    private int minesLeft;
-    private final transient  Image[] img;
+    /**
+     * The total number of mines in the game board.
+     */
     private static final int MINES = 40;
+
+    /**
+     * The number of rows in the game board.
+     */
     public static final int ROWS = 16;
+
+    /**
+     * The number of columns in the game board.
+     */
     public static final int COLS = 16;
+
+    /**
+     * A pseudo-random number generator used to randomly place mines on the board.
+     * The {@code Random} instance is initialized in the constructor with the
+     * current time as the seed, so the sequence of numbers generated is likely
+     * to be different each time the program is run.
+     */
+    private final Random random;
+
+    /**
+     * A list that contains all the cells of the game board.
+     * The cells are stored in row-major order, i.e., each row is stored
+     * consecutively in the list.
+     * it is marked as {@code transient} to exclude it from serialization.
+     */
+    private transient List<Cell> boardCells;
+
+    /**
+     * The total number of images.
+     */
+    private static final int NUM_IMAGES = 13;
+
+    /**
+
+     An array of images used to represent the different cell states.
+     The images are loaded once and stored in this array for easy access.
+     The array is marked as {@code final} to ensure that its reference cannot be changed,
+     and it is marked as {@code transient} to exclude it from serialization.
+     */
+    private final transient  Image[] img;
+
+    /**
+     * A boolean flag indicating whether the game is currently in progress or not.
+     * If the value is true, the game is still in progress. If the value is false, the game
+     * has either been won or lost and is no longer in progress.
+     */
+    private boolean inGame;
+
+    /**
+     * The number of mines left to be marked by the player.
+     */
+    private int minesLeft;
+
+    /**
+     * The total number of all cells .
+     */
     private int allCells;
+
+    /**
+     * The status bar label used to display the current game status to the user.
+     */
     private final JLabel statusbar;
+
+    /**
+     * The total number of checked cells .
+     */
     private int checkedCells = 0;
+
+    /**
+     * The index of the mark image.
+     */
     private static final int DRAW_MARK = 11;
+
+    /**
+     * The index of the wrong mark image.
+     */
     private static final int DRAW_WRONG_MARK = 12;
+
+    /**
+     * The index of the cover image.
+     */
     private static final int COVER_FOR_CELL = 10;
 
-    public Board(JLabel statusbar) throws NoSuchAlgorithmException {
 
+    /**
+     * Constructs a new Board object.
+     *
+     * @param statusbar The status bar to display the game score.
+     * @throws NoSuchAlgorithmException If the SecureRandom algorithm is not available.
+     */
+    public Board(JLabel statusbar) throws NoSuchAlgorithmException {
 
         random = SecureRandom.getInstanceStrong();
 
@@ -46,6 +127,9 @@ public class Board extends JPanel {
         initGame();
     }
 
+    /**
+     * Initializes the game board by creating all the cells
+     */
     public void initGame(){
         allCells = ROWS * COLS;
         boardCells = new ArrayList<>(allCells);
@@ -61,10 +145,11 @@ public class Board extends JPanel {
         // Set the layout manager of the panel to BorderLayout
         setLayout(new BorderLayout());
 
-
-
     }
 
+    /**
+     * Starts a new game by setting up the mines.
+     */
     public void newGame() {
 
         inGame = true;
@@ -90,6 +175,11 @@ public class Board extends JPanel {
 
     }
 
+    /**
+     * Finds and uncovers all empty cells adjacent to the specified cell index.
+     *
+     * @param cellIndex The index of the cell to find empty cells around.
+     */
     public void findEmptyCells(int cellIndex) {
 
         boardCells.get(cellIndex).getCellCorners()
@@ -107,6 +197,12 @@ public class Board extends JPanel {
 
     }
 
+
+    /**
+     * Overrides the paint method to draw the cells on the game board.
+     *
+     * @param g The graphics object to paint on.
+     */
     @Override
     public void paint(Graphics g) {
         boardCells.forEach(cell -> g.drawImage(cell.getCellImage(), cell.column * Cell.WIDTH,
@@ -114,8 +210,19 @@ public class Board extends JPanel {
 
     }
 
+    /**
+     * Handles the mouse events for the game board panel.
+     * This class extends MouseAdapter
+     * and implements the logic for handling left and right mouse clicks on the game board.
+     */
     private class MinesAdapter extends MouseAdapter {
 
+        /**
+         * Overrides the mousePressed method of MouseAdapter class to handle mouse press events on the panel.
+         * Gets the clicked cell column and row from the MouseEvent object.
+         * Checks  whether it is a left or right click and calls the appropriate method to handle the click
+         * @param e the MouseEvent object representing the mouse press event
+         */
         @Override
         public void mousePressed(MouseEvent e) {
 
@@ -135,7 +242,11 @@ public class Board extends JPanel {
             checkWining();
         }
 
-
+        /**
+         * Handles a left mouse click event on a cell in the game panel.
+         * Uncovers the clicked cell and updates the game panel.
+         * @param cellIndex the index of the clicked cell
+         */
         private void cellLabelLeftClicked(int cellIndex) {
 
             if (!inGame) {
@@ -161,6 +272,12 @@ public class Board extends JPanel {
 
         }
 
+        /**
+         * Handles a right mouse click event on a cell in the game panel.
+         * Marks the clicked cell with a flag to indicate it might have a mine
+         * and updates the statusbar to show the remaining mines.
+         * @param cellIndex the index of the clicked cell
+         */
         private void cellLabelRightClicked(int cellIndex){
 
             if (!inGame) {
@@ -189,6 +306,11 @@ public class Board extends JPanel {
             }
         }
 
+        /**
+         * Checks if the player has won the game.
+         * If all mine cells are marked and the rest are checked,
+         * updates the statusbar to announce the win.
+         */
         private void checkWining(){
             if(checkedCells == (allCells - MINES) && minesLeft == 0){
                 inGame = false;
@@ -196,6 +318,10 @@ public class Board extends JPanel {
             }
         }
 
+        /**
+         * Ends the game and shows the final result by uncovering all cells.
+         * Updates the statusbar to announce the loss.
+         */
         private void gameOver() {
 
             boardCells.forEach(cell  -> {
@@ -215,6 +341,4 @@ public class Board extends JPanel {
         }
 
     }
-
-
 }
