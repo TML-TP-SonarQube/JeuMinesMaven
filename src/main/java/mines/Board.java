@@ -88,7 +88,7 @@ public class Board extends JPanel {
     /**
      * The total number of checked cells .
      */
-    private int checkedCells = 0;
+    private int checkedCells;
 
     /**
      * The index of the mark image.
@@ -153,6 +153,7 @@ public class Board extends JPanel {
     public void newGame() {
 
         inGame = true;
+        checkedCells = 0;
         minesLeft = MINES;
 
         statusbar.setText(Integer.toString(minesLeft));
@@ -203,9 +204,9 @@ public class Board extends JPanel {
      * and setting up the mines by calling {@code  newGame()}
      */
     public void resetBoard() {
-        boardCells.forEach(cell-> cell.initCell(img[COVER_FOR_CELL]));
-        newGame();
+        boardCells.forEach(cell -> cell.initCell(img[COVER_FOR_CELL]));
         repaint();
+        newGame();
     }
 
     /**
