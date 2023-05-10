@@ -11,7 +11,18 @@ package mines;
  </ul>
  */
 public enum CellState {
+    /**
+     * the cell has been checked and its content is visible.
+     */
     CHECKED,
+
+    /**
+     * the cell has been marked as potentially containing a mine.
+     */
     MARKED,
+
+    /**
+     * the cell has not been checked or marked.
+     */
     UNCHECKED
 }

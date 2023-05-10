@@ -1,0 +1,10 @@
+mines.Mines#<init>()V
+java.awt.BorderLayout#<init>()V
+javax.swing.BorderFactory#createEmptyBorder(IIII)Ljavax/swing/border/Border;
+javax.swing.JLabel#<init>(Ljava/lang/String;)V
+mines.Board#<init>(Ljavax/swing/JLabel;)V
+mines.Board#instance-init#
+javax.swing.JLabel#instance-init#
+java.awt.BorderLayout#instance-init#
+javax.swing.JPanel#instance-init#
+javax.swing.JPanel#<init>(Ljava/awt/LayoutManager;)V

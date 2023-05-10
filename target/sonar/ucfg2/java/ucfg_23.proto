@@ -1,0 +1,89 @@
+
+__sonar_lambda_2$mines.BoardK
+?/Users/mac/Desktop/JeuMinesMaven/src/main/java/mines/Board.javaÐ Ñ(E"startingBlock*
+startingBlock
+Ð Ñ(En
+l
+
+__unknown_file (
+gjava.awt.Graphics"__id*2
+
+__unknown_file (*
+mines.Board"
+g*
+1*±
+1
+Ð# Ð($’
+
+Ð/ Ð(B
+%2java.awt.Image")mines.Cell#getCellImage()Ljava/awt/Image;*0
+
+__unknown_file (
+
+cell
+mines.Cell2getCellImage()C
+A
+
+ÐR Ð(\	
+%3int"__id*"
+
+__unknown_file (
+""C
+A
+
+Ñ Ñ(&	
+%4int"__id*"
+
+__unknown_file (
+""C
+A
+
+Ñ' Ñ(1	
+%5int"__id*"
+
+__unknown_file (
+""C
+A
+
+Ñ3 Ñ(>	
+%6int"__id*"
+
+__unknown_file (
+""×Ô
+
+Ð# Ñ(E
+%7boolean"Pjava.awt.Graphics#drawImage(Ljava/awt/Image;IIIILjava/awt/image/ImageObserver;)Z*4
+
+__unknown_file (
+
+gjava.awt.Graphics*2
+
+__unknown_file (
+
+%2java.awt.Image*"
+
+__unknown_file (
+""*"
+
+__unknown_file (
+""*'
+
+__unknown_file (
+	
+%5int*'
+
+__unknown_file (
+	
+%6int*"
+
+__unknown_file (
+""2=drawImage(Ljava/awt/Image;IIIILjava/awt/image/ImageObserver;)"
+
+Ð# Ñ(E
+
+%7boolean: 
+
+Ð Ð(
+cell
+mines.CellB
+java.util.function.Consumer

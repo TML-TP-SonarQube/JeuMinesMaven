@@ -1,0 +1,7 @@
+organization=tml-tp-sonarqube
+projectKey=TML-TP-SonarQube_JeuMines
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.40861
+dashboardUrl=https://sonarcloud.io/dashboard?id=TML-TP-SonarQube_JeuMines
+ceTaskId=AYgHMExELPNm-S8ct8Ws
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYgHMExELPNm-S8ct8Ws

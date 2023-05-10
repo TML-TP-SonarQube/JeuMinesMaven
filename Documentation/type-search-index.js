@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"mines","l":"Board"},{"p":"mines","l":"Cell"},{"p":"mines","l":"CellState"},{"p":"mines","l":"Corner"},{"p":"mines","l":"Mines"},{"p":"mines","l":"Board.MinesAdapter"}]
