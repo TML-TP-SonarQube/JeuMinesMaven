@@ -199,6 +199,50 @@ public class Board extends JPanel {
 
 
     /**
+     * Resets the board by covering all the cells
+     * and setting up the mines by calling {@code  newGame()}
+     */
+    public void resetBoard() {
+        boardCells.forEach(cell-> cell.initCell(img[COVER_FOR_CELL]));
+        newGame();
+        repaint();
+    }
+
+    /**
+     * Checks if the player has won the game.
+     * If all mine cells are marked and the rest are checked,
+     * updates the statusbar to announce the win.
+     */
+    public void checkWining(){
+        if(checkedCells == (allCells - MINES) && minesLeft == 0){
+            inGame = false;
+            statusbar.setText("Game Won");
+        }
+    }
+
+    /**
+     * Reveal the board and shows the final result by uncovering all cells.
+     * Updates the statusbar to announce the loss.
+     */
+    public void revealBoard() {
+
+        boardCells.forEach(cell  -> {
+            if(cell.getCellState() == CellState.MARKED) {
+                if (cell.isMined())
+                    cell.markCell(img[DRAW_MARK]);
+                else
+                    cell.markCell(img[DRAW_WRONG_MARK]);
+
+            }else {
+                cell.checkCell(img[cell.getCellContent()]);
+            }
+        });
+        setSize(Cell.WIDTH * COLS, Cell.HEIGHT * ROWS);
+        repaint();
+        statusbar.setText("Game Lost");
+    }
+
+    /**
      * Overrides the paint method to draw the cells on the game board.
      *
      * @param g The graphics object to paint on.
@@ -250,7 +294,7 @@ public class Board extends JPanel {
         private void cellLabelLeftClicked(int cellIndex) {
 
             if (!inGame) {
-                initGame();
+                resetBoard();
                 return;
             }
 
@@ -258,7 +302,7 @@ public class Board extends JPanel {
 
                 if (boardCells.get(cellIndex).isMined()) {
                     inGame = false;
-                    gameOver();
+                    revealBoard();
                 }
                 else {
                     boardCells.get(cellIndex).checkCell(img[boardCells.get(cellIndex).getCellContent()]);
@@ -281,7 +325,7 @@ public class Board extends JPanel {
         private void cellLabelRightClicked(int cellIndex){
 
             if (!inGame) {
-                initGame();
+                resetBoard();
                 return;
             }
 
@@ -304,40 +348,6 @@ public class Board extends JPanel {
                 repaint();
                 statusbar.setText(Integer.toString(minesLeft));
             }
-        }
-
-        /**
-         * Checks if the player has won the game.
-         * If all mine cells are marked and the rest are checked,
-         * updates the statusbar to announce the win.
-         */
-        private void checkWining(){
-            if(checkedCells == (allCells - MINES) && minesLeft == 0){
-                inGame = false;
-                statusbar.setText("Game Won");
-            }
-        }
-
-        /**
-         * Ends the game and shows the final result by uncovering all cells.
-         * Updates the statusbar to announce the loss.
-         */
-        private void gameOver() {
-
-            boardCells.forEach(cell  -> {
-                if(cell.getCellState() == CellState.MARKED) {
-                    if (cell.isMined())
-                        cell.markCell(img[DRAW_MARK]);
-                    else
-                        cell.markCell(img[DRAW_WRONG_MARK]);
-
-                }else {
-                    cell.checkCell(img[cell.getCellContent()]);
-                }
-            });
-            setSize(Cell.WIDTH * COLS, Cell.HEIGHT * ROWS);
-            repaint();
-            statusbar.setText("Game Lost");
         }
 
     }

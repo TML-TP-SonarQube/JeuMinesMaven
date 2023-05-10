@@ -81,15 +81,23 @@ public class Cell{
     public Cell(int index, Image img){
 
         this.index = index;
+        corners = new EnumMap<>(Corner.class);
+        row = index / Board.COLS;
+        column = index % Board.COLS;
+        initCell(img);
+        setCellCorners();
+    }
+
+    /**
+     * Initializes the cell
+     * @param img the image to be displayed on the cell
+     */
+    public void initCell(Image img){
         state = CellState.UNCHECKED;
         isCellMined = false;
-        corners = new EnumMap<>(Corner.class);
         cornersMineCell = 0;
         cellContent = 0;
         cellImage = img;
-        row = index / Board.COLS;
-        column = index % Board.COLS;
-        setCellCorners();
     }
 
     /**
