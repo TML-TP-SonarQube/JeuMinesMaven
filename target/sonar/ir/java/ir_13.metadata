@@ -1,2 +1,0 @@
-mines.Cell#markCell(Ljava/awt/Image;)V
-mines.Cell#setCellState(Lmines/CellState;Ljava/awt/Image;)V
