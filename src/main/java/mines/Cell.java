@@ -59,12 +59,12 @@ public class Cell implements ICell {
     /**
      * The row number of the cell.
      */
-    private int row;
+    private final int row;
 
     /**
      * The column number of the cell.
      */
-    private int column;
+    private final int column;
 
     /**
      * The index of the mine image.
