@@ -47,7 +47,7 @@ public class Board extends JPanel {
      * consecutively in the list.
      * it is marked as {@code transient} to exclude it from serialization.
      */
-    private transient List<Cell> boardCells;
+    private transient List<ICell> boardCells;
 
     /**
      * The total number of images.
@@ -135,8 +135,7 @@ public class Board extends JPanel {
         boardCells = new ArrayList<>(allCells);
 
         for (int i = 0; i < allCells; i++) {
-            int cellIndex = i;
-            Cell newCell = new Cell(cellIndex, img[COVER_FOR_CELL]);
+            ICell newCell = new Cell(i, img[COVER_FOR_CELL]);
             boardCells.add(newCell);
         }
         repaint();
@@ -250,8 +249,8 @@ public class Board extends JPanel {
      */
     @Override
     public void paint(Graphics g) {
-        boardCells.forEach(cell -> g.drawImage(cell.getCellImage(), cell.column * Cell.WIDTH,
-                cell.row * Cell.HEIGHT,Cell.WIDTH, Cell.HEIGHT, null));
+        boardCells.forEach( cell -> g.drawImage(cell.getCellImage(), cell.getColumn() * Cell.WIDTH,
+                cell.getRow() * Cell.HEIGHT,Cell.WIDTH, Cell.HEIGHT, null));
 
     }
 
@@ -278,10 +277,10 @@ public class Board extends JPanel {
 
             if (e.getButton() == MouseEvent.BUTTON1) {
                 // Left mouse button clicked
-                cellLabelLeftClicked(cellIndex);
+                cellLeftClicked(cellIndex);
             } else{
                 // Right mouse button clicked
-                cellLabelRightClicked(cellIndex);
+                cellRightClicked(cellIndex);
             }
 
             checkWining();
@@ -292,7 +291,7 @@ public class Board extends JPanel {
          * Uncovers the clicked cell and updates the game panel.
          * @param cellIndex the index of the clicked cell
          */
-        private void cellLabelLeftClicked(int cellIndex) {
+        private void cellLeftClicked(int cellIndex) {
 
             if (!inGame) {
                 resetBoard();
@@ -323,7 +322,7 @@ public class Board extends JPanel {
          * and updates the statusbar to show the remaining mines.
          * @param cellIndex the index of the clicked cell
          */
-        private void cellLabelRightClicked(int cellIndex){
+        private void cellRightClicked(int cellIndex){
 
             if (!inGame) {
                 resetBoard();

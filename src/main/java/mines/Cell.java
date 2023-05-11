@@ -5,11 +5,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * The Cell class represents a cell on the game board.
+ * The Cell class implements ICell interface and represents a cell on the game board.
  * It contains information about the cell's state and contents, as well as its location
  * on the board and the indices of its corners.
  */
-public class Cell{
+public class Cell implements ICell {
 
     /**
      * The width of the cell.
@@ -59,12 +59,12 @@ public class Cell{
     /**
      * The row number of the cell.
      */
-    int row;
+    private int row;
 
     /**
      * The column number of the cell.
      */
-    int column;
+    private int column;
 
     /**
      * The index of the mine image.
@@ -150,6 +150,24 @@ public class Cell{
     public void addCornerMineCell(){
         cornersMineCell ++;
         setCellContent(cornersMineCell);
+    }
+
+    /**
+     * Gets the row number of the cell.
+     *
+     * @return the row number of the cell.
+     */
+    public int getRow() {
+        return row;
+    }
+
+    /**
+     * Gets the column number of the cell.
+     *
+     * @return the column number of the cell.
+     */
+    public int getColumn() {
+        return column;
     }
 
     /**
