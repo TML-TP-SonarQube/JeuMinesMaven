@@ -1,7 +1,6 @@
 package mines;
 
 import java.awt.BorderLayout;
-import java.security.NoSuchAlgorithmException;
 
 import javax.swing.*;
 
@@ -27,22 +26,20 @@ public class Mines extends JFrame {
     /**
      * The width of the game window in pixels.
      */
-    private static final int WIDTH = Cell.WIDTH * Board.COLS + BOARD_PADDING;
+    static final int WIDTH = Cell.WIDTH * Board.COLS + BOARD_PADDING;
 
     /**
      * The height of the game window in pixels.
      */
-    private static final int HEIGHT = Cell.HEIGHT * Board.ROWS + SCORE_PANEL_HEIGHT + BOARD_PADDING;
+    static final int HEIGHT = Cell.HEIGHT * Board.ROWS + SCORE_PANEL_HEIGHT + BOARD_PADDING;
 
 
 
     /**
      * Constructs a Mines object and initializes the game frame with a set size and layout.
      * It also initializes an instance of the Board class, which generates the game board.
-     * @throws NoSuchAlgorithmException if SHA-256 algorithm is not available on the system
-     *
      */
-    public Mines() throws NoSuchAlgorithmException {
+    public Mines() {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
@@ -51,13 +48,13 @@ public class Mines extends JFrame {
 
         JPanel scorePanel = new JPanel(new BorderLayout());
 
-        // Create a label to display the score
-        JLabel scoreTitleLabel = new JLabel("Marks Left: ");
+        // a label to display the marks left title
+        JLabel marksLeftTitleLabel = new JLabel("Marks Left: ");
 
-        JLabel statusbar = new JLabel("");
+        JLabel marksLeftLabel = new JLabel("");
 
-        scorePanel.add(scoreTitleLabel, BorderLayout.WEST);
-        scorePanel.add(statusbar,BorderLayout.CENTER);
+        scorePanel.add(marksLeftTitleLabel, BorderLayout.WEST);
+        scorePanel.add(marksLeftLabel,BorderLayout.CENTER);
         scorePanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 5, 10));
         scorePanel.setSize(WIDTH, SCORE_PANEL_HEIGHT);
         add(scorePanel, BorderLayout.SOUTH);
@@ -65,7 +62,7 @@ public class Mines extends JFrame {
         JPanel boardPanel = new JPanel(new BorderLayout());
         int boardSidePadding = BOARD_PADDING / 2;
         boardPanel.setBorder(BorderFactory.createEmptyBorder(boardSidePadding, boardSidePadding, boardSidePadding, boardSidePadding));
-        boardPanel.add(new Board(statusbar), BorderLayout.CENTER);
+        boardPanel.add(new Board(marksLeftLabel), BorderLayout.CENTER);
 
         add(boardPanel);
         setResizable(false);
@@ -78,7 +75,7 @@ public class Mines extends JFrame {
      *
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) {
         new Mines();
     }
 }

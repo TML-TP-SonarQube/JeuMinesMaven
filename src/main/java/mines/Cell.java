@@ -148,8 +148,10 @@ public class Cell implements ICell {
      * Increments the number of mined corner cells surrounding this cell.
      */
     public void addCornerMineCell(){
-        cornersMineCell ++;
-        setCellContent(cornersMineCell);
+        if(!isCellMined) {
+            cornersMineCell++;
+            setCellContent(cornersMineCell);
+        }
     }
 
     /**
