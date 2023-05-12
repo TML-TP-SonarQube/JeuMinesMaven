@@ -7,13 +7,15 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BoardTest {
     private static Board board;
 
     @BeforeAll
-    static void initializeBoard(){
+    static void initializeBoardTest(){
         board = new Board(new JLabel());
+        assertEquals(Board.MINES, board.getBoardCells().stream().filter(ICell::isMined).count());
     }
 
     @Test
@@ -29,7 +31,7 @@ class BoardTest {
         assertNotNull(board.getBoardCells());
 
         // checking boardCells has the size of allCells
-        assertEquals(board.getAllCells(), board.getBoardCells().size());
+        assertEquals(Board.ROWS*Board.COLS, board.getBoardCells().size());
 
     }
 
@@ -116,7 +118,7 @@ class BoardTest {
     }
 
     @Test
-    void mouseRightClickNoMArksLeftTest(){
+    void mouseRightClickNoMarksLeftTest(){
         Board board = new Board(new JLabel());
         ICell randomCell = board.getBoardCells()
                 .stream()
@@ -136,7 +138,48 @@ class BoardTest {
         // check that the status bar displays that no marks left
         assertTrue(board.getStatusbar().getText().contains("No marks left"));
 
+        randomCell = board.getBoardCells()
+                .stream()
+                .filter( cell -> cell.getCellState() == CellState.UNCHECKED && !cell.isMined())
+                .findAny().orElse(null);
+
+        assertNotNull(randomCell);
+        cellIndex = randomCell.getRow() * Board.COLS + randomCell.getColumn();
+        // clicking when no marks left
+        board.getMouseAdapter().cellRightClicked(cellIndex);
+
+        assertEquals(0,board.getMinesLeft());
+
+
     }
+
+    @Test
+    void mouseRightClickCheckedCellTest(){
+        Board board = new Board(new JLabel());
+        ICell randomCell = board.getBoardCells()
+                .stream()
+                .filter(cell -> !cell.isMined())
+                .findAny().orElse(null);
+
+        // checking that at least a cell exist
+        assertNotNull(randomCell);
+
+        // the position of the random cell in the board
+        int cellIndex = randomCell.getRow() * Board.COLS + randomCell.getColumn();
+
+        // checking the cell
+        board.getMouseAdapter().cellLeftClicked(cellIndex);
+        // checking is in state CHECKED
+        assertSame(CellState.CHECKED, randomCell.getCellState());
+
+        // simulating a user click event
+        board.getMouseAdapter().cellRightClicked(cellIndex);
+
+        assertEquals(Board.MINES, board.getMinesLeft());
+
+
+    }
+
 
     @Test
     void clickingToUnMarkAlreadyMarkedCellTest(){
@@ -214,6 +257,58 @@ class BoardTest {
     }
 
     @Test
+    void leftMousePressedEmptyCellTest(){
+        Board board = new Board(new JLabel());
+
+        ICell randomCell = board.getBoardCells().stream()
+                .filter(ICell::hasNoMineCellCorners)
+                .findAny().orElse(null);
+
+        // checking that at least a non mined cell exist
+        assertNotNull(randomCell);
+        int cellX = randomCell.getColumn() * Cell.WIDTH + (Cell.WIDTH/2);
+        int cellY = randomCell.getRow() * Cell.HEIGHT + (Cell.HEIGHT/2);
+        MouseEvent e = new MouseEvent(board, 0, 0,0,cellX,cellY,1,false,MouseEvent.BUTTON1);
+        board.getMouseAdapter().mousePressed(e);
+
+        // check that the cell state is CHECKED
+        assertEquals(CellState.CHECKED, randomCell.getCellState());
+
+        // checks that at least one cell is checked (maybe more if the cell is empty)
+        assertTrue( board.getCheckedCells() > 0);
+    }
+
+    @Test
+    void leftMousePressedCheckedCellTest(){
+        Board board = new Board(new JLabel());
+
+        ICell randomCell = board.getBoardCells().stream()
+                .filter(cell -> !cell.isMined())
+                .findAny().orElse(null);
+
+        // checking that at least a non mined cell exist
+        assertNotNull(randomCell);
+        int cellX = randomCell.getColumn() * Cell.WIDTH + (Cell.WIDTH/2);
+        int cellY = randomCell.getRow() * Cell.HEIGHT + (Cell.HEIGHT/2);
+        MouseEvent e = new MouseEvent(board, 0, 0,0,cellX,cellY,1,false,MouseEvent.BUTTON1);
+        board.getMouseAdapter().mousePressed(e);
+
+        // check that the cell state is CHECKED
+        assertEquals(CellState.CHECKED, randomCell.getCellState());
+
+        // checks that at least one cell is checked (maybe more if the cell is empty)
+        assertTrue( board.getCheckedCells() > 0);
+
+        // clicking in a checked cell
+        board.getMouseAdapter().mousePressed(e);
+
+        // check that the cell state is CHECKED
+        assertEquals(CellState.CHECKED, randomCell.getCellState());
+
+    }
+
+
+    @Test
     void rightMousePressedTest(){
         Board board = new Board(new JLabel());
         ICell randomCell = board.getBoardCells()
@@ -234,11 +329,39 @@ class BoardTest {
         // checks that minesLeft decremented by one
         assertEquals(Board.MINES - 1, board.getMinesLeft());
     }
+
+    @Test
+    void otherMousePressedTest(){
+        Board board = new Board(new JLabel());
+        ICell randomCell = board.getBoardCells()
+                .stream()
+                .findAny().orElse(null);
+
+        // checking that at least a cell exist
+        assertNotNull(randomCell);
+
+        int cellX = randomCell.getColumn() * Cell.WIDTH + (Cell.WIDTH/2);
+        int cellY = randomCell.getRow() * Cell.HEIGHT + (Cell.HEIGHT/2);
+        MouseEvent e = new MouseEvent(board, 0, 0,0,cellX,cellY,1,false,MouseEvent.BUTTON2);
+        board.getMouseAdapter().mousePressed(e);
+
+        // check that the cell state is CHECKED
+        assertNotEquals(CellState.CHECKED, randomCell.getCellState());
+
+        // checks that at least one cell is checked (maybe more if the cell is empty)
+        assertFalse( board.getCheckedCells() > 0);
+
+        // check that the cell state is MARKED
+        assertNotEquals(CellState.MARKED, randomCell.getCellState());
+
+        // checks that minesLeft decremented by one
+        assertNotEquals(Board.MINES - 1, board.getMinesLeft());
+    }
     @AfterEach
     @Test
     void resetBoardTest() {
         board.resetBoard();
-        board.getBoardCells().forEach(cell -> assertSame(cell.getCellState(), CellState.UNCHECKED));
+        board.getBoardCells().forEach(cell -> assertSame(CellState.UNCHECKED, cell.getCellState()));
     }
 
     @Test
@@ -274,6 +397,38 @@ class BoardTest {
     }
 
     @Test
+    void checkFalseWiningTest() {
+
+        // simulating a winning scenario
+
+        // marking all the mined cells
+        board.getBoardCells()
+                .stream()
+                .filter(ICell::isMined)
+                .forEach(cell -> cell.markCell(new ImageIcon().getImage()));
+
+        board.setMinesLeft(1);
+
+
+        // checking all non mined cells
+        board.getBoardCells()
+                .stream()
+                .filter(cell -> !cell.isMined())
+                .forEach(cell -> cell.checkCell(new ImageIcon().getImage()));
+
+        board.setCheckedCells(board.getAllCells() - Board.MINES);
+
+
+        board.checkWining();
+
+        assertTrue(board.isInGame());
+
+        assertFalse(board.getStatusbar().getText().contains("Game Won"));
+
+
+    }
+
+    @Test
     void lostGameTest(){
         // simulating a lost scenario
         ICell randomMinedCell = board.getBoardCells().stream().filter(ICell::isMined).findAny().orElse(null);
@@ -288,6 +443,7 @@ class BoardTest {
         assertTrue(board.getStatusbar().getText().contains("Game Lost"));
 
     }
+    
     @Test
     void revealBoardTest() {
 
@@ -304,7 +460,7 @@ class BoardTest {
         board.revealBoard();
         board.getBoardCells()
                 .forEach(cell ->
-                        assertNotEquals(cell.getCellState(), CellState.UNCHECKED)
+                        assertNotEquals(CellState.UNCHECKED, cell.getCellState())
                 );
 
 

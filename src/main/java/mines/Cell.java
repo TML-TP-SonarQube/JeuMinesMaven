@@ -34,7 +34,7 @@ public class Cell implements ICell {
     /**
      * The boolean that represents if the cell is mined.
      */
-    private Boolean isCellMined;
+    private boolean isCellMined;
 
     /**
      * A map containing the indices of each of the cell's corners.
@@ -178,8 +178,6 @@ public class Cell implements ICell {
      * @param cellCorners the integer value to set as the cell's content
      */
     private void setCellContent(int cellCorners){
-        boolean notMinedCell = !isCellMined;
-        if (notMinedCell)
             cellContent = cellCorners;
     }
 

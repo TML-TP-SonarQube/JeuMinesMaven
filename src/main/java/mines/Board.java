@@ -126,7 +126,7 @@ public class Board extends JPanel {
      */
     @VisibleForTesting
     @Getter
-    private final MinesAdapter mouseAdapter;
+    private final transient MinesAdapter mouseAdapter;
     /**
      * Constructs a new Board object.
      *
